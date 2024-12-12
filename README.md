@@ -1,78 +1,233 @@
-# grafana + prometheus + loki
+# Grafana Loki Prometheus
 
+## 프로젝트 개요
+이 프로젝트는 **Grafana**, **Loki**, **Prometheus**를 활용하여 모니터링 및 로깅을 구현하는 데 중점을 둡니다.
+효율적인 데이터 시각화 및 로깅 솔루션을 제공하며, 애플리케이션의 상태를 실시간으로 모니터링할 수 있습니다.
 
-## Overview
+---
 
-The core components in the architecture are **Grafana** and **Prometheus** and **Lokii**.
+## 주요 기능
 
-* **Prometheus** is responsible for collecting and storing metric data.
-* **Grafana** acts as the frontend that visualizes data queried from Prometheus using PromQL.
-* **Loki** collects and stores logs, integrating with Grafana for log visualization alongside metrics.
+1. **Grafana 대시보드**
+   - 실시간 데이터 시각화
+   - 커스텀 가능한 위젯 및 차트
+   - 다양한 데이터 소스 통합 지원
 
-The **query-exporter** executes SQL queries from your RDBMS, transforming the results into metrics. These metrics will be periodically collected by Prometheus. For instance, this could include metrics such as the number of subscribers or the count of posts.
+2. **Loki를 이용한 로깅**
+   - 분산 환경에서 로그 집계
+   - 간단하고 빠른 로그 쿼리
 
-To collect metrics from the RDBMS, please open the `query-exporter/config.yaml` file and configure the DB connection settings, as well as write the necessary SQL queries. Below is an example!
+3. **Prometheus를 이용한 메트릭 수집**
+   - 애플리케이션 및 서버 메트릭 수집
+   - 경고 설정 및 알림 시스템
+
+4. **Exporter 통합**
+   - **mysqld_exporter**: MySQL 데이터베이스 메트릭 수집
+   - **node_exporter**: 서버 및 시스템 메트릭 수집
+   - **promtail**: Loki와 통합하여 로그 수집 및 전송
+
+---
+
+## 기술 스택
+
+- **Backend:** Prometheus, Loki
+- **Frontend:** Grafana
+- **Containerization:** Docker, Docker Compose
+- **Languages:** YAML (for configuration)
+
+---
+
+## 설치 및 실행 방법
+
+1. **리포지토리 클론**
+   ```bash
+   git clone https://github.com/Heesunni/grafana_loki_prometheus.git
+   cd grafana_loki_prometheus
+   ```
+
+2. **Docker Compose 실행**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Grafana에 접속**
+   - 브라우저에서 `http://localhost:3000`에 접속
+   - 기본 로그인 정보:
+     - 사용자 이름: `admin`
+     - 비밀번호: `admin`
+
+4. **Prometheus 및 Loki 설정**
+   - Prometheus: `http://localhost:9090`
+   - Loki: 로그 소스 및 Grafana 데이터 소스로 추가
+
+---
+
+## 폴더 구조
+
+```
+├── docker-compose.yml       # Docker Compose 설정 파일
+├── grafana/                 # Grafana 설정 파일 및 데이터
+├── prometheus/              # Prometheus 설정 파일
+├── loki/                    # Loki 설정 파일
+└── README.md                # 프로젝트 설명 문서
+```
+
+---
+
+## 사용 사례
+
+- 애플리케이션 성능 모니터링
+- 로그 분석 및 문제 디버깅
+- 시스템 경고 및 알림 설정
+
+---
+
+## Prometheus 설정 예시
+
+아래는 Prometheus에서 **mysqld_exporter**, **node_exporter**, **promtail**을 사용하는 예제 설정 파일입니다:
 
 ```yaml
-databases:
-  my-db:
-    dsn: mysql://my-username:my-password@my-database-host:3306/my-database
+# prometheus.yml
 
-metrics:
-  my_user_total:
-    type: gauge
-    description: Total user count
+global:
+  scrape_interval: 15s
 
-queries:
-  user-total-query:
-    interval: 5
-    databases: [my-db]
-    metrics: [my_user_total]
-    sql: SELECT COUNT(*) AS my_user_total FROM member
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+
+  - job_name: 'mysqld_exporter'
+    static_configs:
+      - targets: ['localhost:9104']
+
+  - job_name: 'promtail'
+    static_configs:
+      - targets: ['localhost:9080']
 ```
 
-And run this command:
-```bash
-docker compose up
+위 설정에서는 각 exporter가 로컬 호스트에서 실행 중인 것으로 가정합니다. 필요에 따라 IP 주소나 포트를 수정하세요.
+
+---
+
+# Grafana Loki Prometheus
+
+## Project Overview
+This project focuses on implementing monitoring and logging using **Grafana**, **Loki**, and **Prometheus**. It provides efficient solutions for data visualization and logging, enabling real-time monitoring of application status.
+
+---
+
+## Key Features
+
+1. **Grafana Dashboard**
+   - Real-time data visualization
+   - Customizable widgets and charts
+   - Supports integration with various data sources
+
+2. **Logging with Loki**
+   - Aggregates logs in distributed environments
+   - Simple and fast log queries
+
+3. **Metric Collection with Prometheus**
+   - Collects metrics from applications and servers
+   - Configurable alerts and notifications
+
+4. **Exporter Integration**
+   - **mysqld_exporter**: Collects MySQL database metrics
+   - **node_exporter**: Collects server and system metrics
+   - **promtail**: Integrates with Loki for log collection and forwarding
+
+---
+
+## Tech Stack
+
+- **Backend:** Prometheus, Loki
+- **Frontend:** Grafana
+- **Containerization:** Docker, Docker Compose
+- **Languages:** YAML (for configuration)
+
+---
+
+## Installation and Usage
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Heesunni/grafana_loki_prometheus.git
+   cd grafana_loki_prometheus
+   ```
+
+2. **Run Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Access Grafana**
+   - Open your browser and go to `http://localhost:3000`
+   - Default login credentials:
+     - Username: `admin`
+     - Password: `admin`
+
+4. **Set Up Prometheus and Loki**
+   - Prometheus: `http://localhost:9090`
+   - Loki: Add log sources and configure Grafana as a data source
+
+---
+
+## Folder Structure
+
 ```
-If you are using docker compose V1, then:
-```bash
-docker-compose up
+├── docker-compose.yml       # Docker Compose configuration file
+├── grafana/                 # Grafana configurations and data
+├── prometheus/              # Prometheus configuration files
+├── loki/                    # Loki configuration files
+└── README.md                # Project documentation
 ```
 
-Open the browser and head over to `http://localhost:3000`. Initial username and password is `admin` / `admin`.
+---
 
+## Use Cases
 
-## Bonus: Connect database over SSH Tunnel
+- Application performance monitoring
+- Log analysis and debugging
+- Setting up system alerts and notifications
 
-If your database is located remotely and its port is not directly accessible, you might find it challenging to connect directly. In such cases, consider using an SSH Tunnel. An SSH Tunnel allows you to access a remote database through SSH.
+---
 
-Add the following content to your docker-compose.yml:
+## Prometheus Configuration Example
+
+Below is an example configuration file for Prometheus using **mysqld_exporter**, **node_exporter**, and **promtail**:
+
 ```yaml
-version: "3"
-services:
-  # ...
+# prometheus.yml
 
-  my-db:
-    image: solo5star/ssh-tunnel
-    restart: unless-stopped
-    volumes:
-      - ./ssh:/ssh
-    environment:
-      - TUNNEL_HOST=example-server.com
-      - LOCAL_PORT=3306
-      - REMOTE_HOST=localhost
-      - REMOTE_PORT=3306
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+
+  - job_name: 'mysqld_exporter'
+    static_configs:
+      - targets: ['localhost:9104']
+
+  - job_name: 'promtail'
+    static_configs:
+      - targets: ['localhost:9080']
 ```
 
-Create an `ssh/config` file and write the following content. The format is the same as the commonly known OpenSSH config. If necessary, place the PEM key inside the ssh folder.
+This configuration assumes the exporters are running on localhost. Modify the IP addresses or ports as needed.
 
-```
-HOST example-server.com
-    HostName example-server.com
-    Port 22
-    User example-user
-    IdentityFile ~/.ssh/example-server.pem
-```
 
-By doing so, you'll be able to connect to the database via the address "my-db" from the query-exporter!
+
+
+
