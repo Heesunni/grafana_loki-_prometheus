@@ -1,29 +1,36 @@
-# Grafana Loki Prometheus
+# Grafana Loki Prometheus (English Version)
 
 ## Project Overview
+
 This project focuses on implementing monitoring and logging using **Grafana**, **Loki**, and **Prometheus**. It provides efficient solutions for data visualization and logging, enabling real-time monitoring of application status.
+
+This project is developed based on and inspired by the [grafana-prometheus-rdbms](https://github.com/solo5star/grafana-prometheus-rdbms) source.
 
 ---
 
 ## Key Features
 
 1. **Grafana Dashboard**
+
    - Real-time data visualization
    - Customizable widgets and charts
-   - Supports integration with various data sources
+   - Integration with various data sources
 
 2. **Logging with Loki**
-   - Aggregates logs in distributed environments
-   - Simple and fast log queries
+
+   - Aggregated logging in distributed environments
+   - Fast and simple log queries
 
 3. **Metric Collection with Prometheus**
+
    - Collects metrics from applications and servers
-   - Configurable alerts and notifications
+   - Configurable alerts and notification system
 
 4. **Exporter Integration**
-   - **mysqld_exporter**: Collects MySQL database metrics
-   - **node_exporter**: Collects server and system metrics
-   - **promtail**: Integrates with Loki for log collection and forwarding
+
+   - **mysqld\_exporter**: Collects MySQL database metrics
+   - **node\_exporter**: Collects server and system metrics
+   - **promtail**: Collects and forwards logs to Loki
 
 ---
 
@@ -39,23 +46,27 @@ This project focuses on implementing monitoring and logging using **Grafana**, *
 ## Installation and Usage
 
 1. **Clone the Repository**
+
    ```bash
    git clone https://github.com/Heesunni/grafana_loki_prometheus.git
    cd grafana_loki_prometheus
    ```
 
 2. **Run Docker Compose**
+
    ```bash
    docker-compose up -d
    ```
 
 3. **Access Grafana**
+
    - Open your browser and go to `http://localhost:3000`
    - Default login credentials:
      - Username: `admin`
      - Password: `admin`
 
 4. **Set Up Prometheus and Loki**
+
    - Prometheus: `http://localhost:9090`
    - Loki: Add log sources and configure Grafana as a data source
 
@@ -83,7 +94,7 @@ This project focuses on implementing monitoring and logging using **Grafana**, *
 
 ## Prometheus Configuration Example
 
-Below is an example configuration file for Prometheus using **mysqld_exporter**, **node_exporter**, and **promtail**:
+Below is an example configuration file for Prometheus using **mysqld\_exporter**, **node\_exporter**, and **promtail**:
 
 ```yaml
 # prometheus.yml
@@ -110,8 +121,4 @@ scrape_configs:
 ```
 
 This configuration assumes the exporters are running on localhost. Modify the IP addresses or ports as needed.
-
-
-
-
 
