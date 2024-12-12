@@ -1,0 +1,15 @@
+databases:
+  my-db:
+    dsn: mysql://
+
+metrics:
+  my_user_total:
+    type: gauge
+    description: Total user count
+
+queries:
+  user-total-query:
+    interval: 5
+    databases: []
+    metrics: []
+    sql: 
