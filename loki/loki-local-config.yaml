@@ -1,5 +1,10 @@
 auth_enabled: false
 
+limits_config:
+  ingestion_rate_mb: 8 # 초당 허용하는 데이터 크기 (기본값: 4MB)
+  ingestion_burst_size_mb: 16 # 허용할 수 있는 최대 버스트 크기 (기본값: 8MB)
+
+
 server:
   http_listen_port: 3100
   grpc_listen_port: 9096
@@ -18,9 +23,9 @@ common:
 
 schema_config:
   configs:
-    - from: 2020-10-24
+    - from: 2024-12-20            #날짜지정
       store: tsdb
-      object_store: filesystem
+      object_store: filesystem    #로그 지정 스토리지
       schema: v13
       index:
         prefix: index_
@@ -28,6 +33,15 @@ schema_config:
 
 ruler:
   alertmanager_url: http://localhost:9093
+
+
+limits_config:
+  retention_period: 90d  # 데이터 보존 기간 설정
+
+
+table_manager:
+  retention_deletes_enabled: true  # 데이터 삭제 활성화
+  retention_period: 90d           # 데이터 보존 기간
 
 # By default, Loki will send anonymous, but uniquely-identifiable usage and configuration
 # analytics to Grafana Labs. These statistics are sent to https://stats.grafana.org/

@@ -1,17 +1,18 @@
-version: "3"
+
 services:
   grafana:
     image: grafana/grafana
-    restart: unless-stopped
+    restart: always
     ports:
-      - 3000:3000
+      - 3003:3000
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - grafana-data:/var/lib/grafana
 
+
   prometheus:
     image: prom/prometheus
-    restart: unless-stopped
+    restart: always
     ports:
       - 9090:9090
     volumes:
@@ -20,25 +21,31 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
-      - --storage.tsdb.retention.time=100d
-      - --storage.tsdb.retention.size=10GB
+      - --storage.tsdb.retention.time=90d
       - --web.console.libraries=/usr/share/prometheus/console_libraries
-      - --web.console.templates=/usr/share/proemtheus/consoles
+      - --web.console.templates=/usr/share/prometheus/consoles
       - --web.enable-admin-api
+      
   
   loki:
     container_name: loki
     image: grafana/loki:latest
-    restart: unless-stopped
+    restart: always
     ports:
       - "3100:3100"
     volumes:
       - ./loki:/etc/loki
-    command: 
+      - loki-data:/loki
+    command:
       - --config.file=/etc/loki/loki-local-config.yaml
+      - --storage.tsdb.retention.time=90d
+      - --storage.tsdb.retention.size=5GB
+
 
 
 
 volumes:
   grafana-data:
   prometheus-data:
+  loki-data:
+
